@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "www.ecb.europa.eu",
+				port: "",
+				pathname: "/euro/coins/comm/html/**",
+			},
+		],
+	},
 };
 
 export default nextConfig;
