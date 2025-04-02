@@ -23,7 +23,7 @@ function AuthButton() {
 
 export default function NavMenu() {
 	return (
-		<header className="flex items-center justify-end sticky top-0 h-[65px] border-b px-8">
+		<header className="bg-white mb-10 flex items-center justify-end sticky top-0 h-[65px] border-b px-8">
 			<AuthButton />
 		</header>
 	);
