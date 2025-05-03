@@ -9,7 +9,7 @@ import {
 export default function Faqs() {
 	return (
 		<>
-			<h2 className="text-2xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-6">
+			<h2 className="mb-6 text-2xl font-bold tracking-tight md:text-3xl">
 				Preguntas frecuentes
 			</h2>
 			<Accordion type="single" collapsible className="w-full">
@@ -17,7 +17,7 @@ export default function Faqs() {
 					<AccordionTrigger>
 						¿Qué tipo de monedas aparecen en la web?
 					</AccordionTrigger>
-					<AccordionContent>
+					<AccordionContent className="text-md">
 						Nuestra plataforma se centra exclusivamente en las monedas
 						conmemorativas de 2 euros emitidas por los países de la Unión
 						Europea desde el año 2004.
@@ -27,7 +27,7 @@ export default function Faqs() {
 					<AccordionTrigger>
 						¿Necesito registrarme para usar la web?
 					</AccordionTrigger>
-					<AccordionContent>
+					<AccordionContent className="text-md">
 						Puedes explorar todas las monedas sin registrarte, pero para marcar
 						cuáles tienes en tu colección y llevar un seguimiento personalizado,
 						es necesario crear una cuenta e iniciar sesión.
@@ -37,7 +37,7 @@ export default function Faqs() {
 					<AccordionTrigger>
 						¿Cómo puedo agregar monedas a mi colección?
 					</AccordionTrigger>
-					<AccordionContent>
+					<AccordionContent className="text-md">
 						Una vez que inicies sesión, simplemente busca la moneda que posees y
 						márcala como parte de tu colección. Tu selección se guardará
 						automáticamente en tu perfil.
@@ -56,7 +56,7 @@ export default function Faqs() {
 					<AccordionTrigger>
 						¿Puedo modificar mi colección después de guardarla?
 					</AccordionTrigger>
-					<AccordionContent>
+					<AccordionContent className="text-md">
 						Por supuesto. Puedes agregar o quitar monedas de tu colección en
 						cualquier momento.
 					</AccordionContent>
@@ -65,14 +65,14 @@ export default function Faqs() {
 					<AccordionTrigger>
 						¿Puedo acceder desde cualquier dispositivo?
 					</AccordionTrigger>
-					<AccordionContent>
+					<AccordionContent className="text-md">
 						Sí, nuestra web está optimizada para funcionar en computadoras,
 						tabletas y teléfonos móviles sin problemas.
 					</AccordionContent>
 				</AccordionItem>
 				<AccordionItem value="item-7">
 					<AccordionTrigger>¿La web es gratuita?</AccordionTrigger>
-					<AccordionContent>
+					<AccordionContent className="text-md">
 						Sí, todas las funcionalidades básicas, como explorar monedas y
 						guardar tu colección, son completamente gratuitas.
 					</AccordionContent>

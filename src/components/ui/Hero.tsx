@@ -12,7 +12,7 @@ export default function Hero() {
 			<h1 className="text-4xl sm:text-7xl font-bold text-transparent tracking-tight text-balance mb-4 bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text">
 				Cazamonedas
 			</h1>
-			<p className="text-xl text-center text-pretty text-gray-500">
+			<p className="text-xl font-medium text-center text-pretty text-slate-900">
 				Colecciona todas las monedas conmemorativas de 2 euros de la Unión
 				Europea. Empieza ahora!
 			</p>

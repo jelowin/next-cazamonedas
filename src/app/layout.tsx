@@ -21,7 +21,7 @@ export default async function RootLayout({
 }>) {
 	const session = await getServerSession();
 	return (
-		<html lang="es">
+		<html lang="es-ES">
 			<body className={`${raleway.className} antialiased`}>
 				<SessionProvider session={session}>
 					<div className="flex flex-col min-h-screen">
