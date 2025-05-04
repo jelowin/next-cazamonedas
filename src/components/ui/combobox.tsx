@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Check, ChevronsUpDown } from "lucide-react";
 import {
 	Command,
 	CommandEmpty,
@@ -18,14 +16,38 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function Combobox({
-	countries,
+	data,
+	param: paramProp,
+	placeholder,
 }: {
-	countries: Array<{ label: string; value: string }>;
+	data: Array<{ label: string; value: string }>;
+	param: string;
+	placeholder: string;
 }) {
 	const [open, setOpen] = React.useState(false);
-	const [value, setValue] = React.useState("");
+	const searchParams = useSearchParams();
+	const router = useRouter();
+	const [value, setValue] = React.useState(searchParams.get(paramProp) || "");
+
+	const handleSelectValueChange = (selectedValue: string) => {
+		const newValue = selectedValue === value ? "" : selectedValue;
+		setValue(newValue);
+		setOpen(false);
+
+		const params = new URLSearchParams(searchParams);
+		if (newValue) {
+			params.set(`${paramProp}`, newValue);
+		} else {
+			params.delete(paramProp);
+		}
+		router.push(`?${params.toString()}`);
+	};
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -36,35 +58,30 @@ export function Combobox({
 					aria-expanded={open}
 					className="w-[200px] justify-between text-md"
 				>
-					{value
-						? countries.find((country) => country.value === value)?.label
-						: "Selecciona un país..."}
+					{value ? data.find((d) => d.value === value)?.label : placeholder}
 					<ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-[200px] p-0">
 				<Command>
-					<CommandInput placeholder="Selecciona un país..." />
+					<CommandInput placeholder={placeholder} />
 					<CommandList>
 						<CommandEmpty>No se ha encontrado el país.</CommandEmpty>
 						<CommandGroup>
-							{countries.map((country) => (
+							{data.map((d) => (
 								<CommandItem
 									className="text-md"
-									key={country.value}
-									value={country.value}
-									onSelect={(currentValue) => {
-										setValue(currentValue === value ? "" : currentValue);
-										setOpen(false);
-									}}
+									key={d.value}
+									value={d.value}
+									onSelect={handleSelectValueChange}
 								>
 									<Check
 										className={cn(
 											"mr-2 h-4 w-4",
-											value === country.value ? "opacity-100" : "opacity-0"
+											value === d.value ? "opacity-100" : "opacity-0"
 										)}
 									/>
-									{country.label}
+									{d.label}
 								</CommandItem>
 							))}
 						</CommandGroup>
