@@ -6,7 +6,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import React, { Suspense } from "react";
-import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
@@ -21,28 +20,29 @@ interface Coin {
 	reason: string;
 }
 
-export default async function CoinsPage({ searchParams }) {
-	const { redirectToSignIn } = await auth();
-	const user = await currentUser();
-	console.log("USER PAGE", user);
+interface CoinsPageProps {
+	searchParams?: Promise<{
+		query?: string;
+		page?: string;
+	}>;
+}
 
-	if (!user) {
-		return redirectToSignIn({
-			returnBackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/coins`,
+export default async function CoinsPage(props: CoinsPageProps) {
+	const urlSearchParams = new URLSearchParams();
+	const searchParams = await props.searchParams;
+
+	if (searchParams) {
+		Object.entries(searchParams).forEach(([key, value]) => {
+			if (value) urlSearchParams.append(key, value.toString());
 		});
 	}
 
-	const urlParams = await searchParams;
-	const params = new URLSearchParams(urlParams).toString();
+	const urlParams = urlSearchParams.toString();
 	const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/getcoins${
-		params ? `?${params}` : ""
+		urlParams ? `?${urlParams}` : ""
 	}`;
 
-	const response = await fetch(url, {
-		headers: {
-			Authorization: `Bearer ${user?.id}`,
-		},
-	});
+	const response = await fetch(url, {});
 
 	if (!response.ok) {
 		const text = await response.text();
@@ -50,15 +50,15 @@ export default async function CoinsPage({ searchParams }) {
 		throw new Error("Error al obtener las monedas");
 	}
 
-	const data: Array<{
+	const data: {
 		coins: Coin[];
 		countries: { label: string; value: string }[];
 		years: { label: string; value: string }[];
-	}> = await response.json();
+	} = await response.json();
 
 	return (
 		<section className="px-4 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
-			<div className="w-full mb-6">
+			<div className="flex gap-4 w-full mb-6">
 				<Combobox
 					data={data.countries}
 					param="country"
