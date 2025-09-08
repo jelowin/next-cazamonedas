@@ -50,6 +50,40 @@ export class CoinService {
 	}
 
 	/**
+	 * Buscar usuario por email
+	 */
+	static async findByEmail(email: string): Promise<UserData | null> {
+		try {
+			const result = await turso.execute(
+				"SELECT * FROM users WHERE email = ?",
+				[email]
+			);
+
+			if (result.rows.length === 0) {
+				return null;
+			}
+
+			const row = result.rows[0];
+			return {
+				id: row.id as number,
+				uuid: row.uuid as string,
+				email: row.email as string,
+				name: (row.name as string) || undefined,
+				image: (row.image as string) || undefined,
+				google_id: (row.google_id as string) || undefined,
+				locale: (row.locale as string) || undefined,
+				verified_email: Boolean(row.verified_email),
+				created_at: row.created_at as string,
+				updated_at: row.updated_at as string,
+				last_login: row.last_login as string,
+			};
+		} catch (error) {
+			console.error("❌ Error buscando usuario por email:", error);
+			return null;
+		}
+	}
+
+	/**
 	 * Saber si un usuario tiene la moneda guardada
 	 */
 	static async hasSavedCoin(userId: string, coinId: string): Promise<boolean> {
@@ -105,19 +139,19 @@ export class CoinService {
 				// Usuario nuevo, crear con UUID
 				const newUuid = generateUUID();
 
-				// await turso.execute(
-				//   `INSERT INTO users (uuid, email, name, image, google_id, locale, verified_email)
-				//    VALUES (?, ?, ?, ?, ?, ?, ?)`,
-				//   [
-				//     newUuid,
-				//     userData.email,
-				//     userData.name || null,
-				//     userData.image || null,
-				//     userData.google_id || null,
-				//     userData.locale || null,
-				//     userData.verified_email || false,
-				//   ]
-				// );
+				await turso.execute(
+					`INSERT INTO users (uuid, email, name, image, google_id, locale, verified_email)
+				   VALUES (?, ?, ?, ?, ?, ?, ?)`,
+					[
+						newUuid,
+						userData.email,
+						userData.name || null,
+						userData.image || null,
+						userData.google_id || null,
+						userData.locale || null,
+						userData.verified_email || false,
+					]
+				);
 
 				console.log("🆕 Nuevo usuario creado con UUID:", newUuid);
 				return await this.findByEmail(userData.email);
