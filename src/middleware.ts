@@ -13,5 +13,10 @@ export default withAuth(
 
 // Especifica qué rutas deben estar protegidas
 export const config = {
-	matcher: [],
+	matcher: [
+		// Protege estas rutas - requieren autenticación
+		"/profile/:path*",
+		"/admin/:path*",
+		"/dashboard/:path*",
+	],
 };
