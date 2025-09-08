@@ -26,8 +26,10 @@ export async function getCountryCodes(): Promise<Record<string, string>> {
 
 		// Convertir a un objeto para fácil lookup
 		const countryCodeMap: Record<string, string> = {};
-		results.rows.forEach((row: any) => {
-			countryCodeMap[row.country] = row.code;
+		results.rows.forEach((row) => {
+			const country = row.country as string;
+			const code = row.code as string;
+			countryCodeMap[country] = code;
 		});
 
 		// Actualizar cache
