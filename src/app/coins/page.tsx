@@ -1,16 +1,12 @@
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React, { Suspense } from "react";
+import { cookies } from "next/headers";
+import { getCountryCodes } from "@/lib/countryCodeService";
 
-import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import Image from "next/image";
-import getUnicodeFlagIcon from "country-flag-icons/unicode";
+import CountryFlag from "@/components/ui/CountryFlag";
+import SaveButton from "@/components/ui/SaveButton";
 
 interface Coin {
 	id: number;
@@ -38,73 +34,114 @@ export default async function CoinsPage(props: CoinsPageProps) {
 	}
 
 	const urlParams = urlSearchParams.toString();
-	const url = `${process.env.NEXT_PUBLIC_APP_URL}/api/getcoins${
+	const coinsUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/get-coins${
 		urlParams ? `?${urlParams}` : ""
 	}`;
 
-	const response = await fetch(url, {});
+	const userCoinsUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/get-user-coins`;
 
-	if (!response.ok) {
-		const text = await response.text();
+	// Obtener las cookies del servidor para pasarlas al fetch
+	const cookieStore = await cookies();
+
+	// Obtener códigos de país directamente desde el servicio (con cache)
+	const countryCodeMap = await getCountryCodes();
+
+	const coinsResponse = await fetch(coinsUrl, {
+		headers: {
+			Cookie: cookieStore.toString(),
+		},
+	});
+
+	const userCoinsResponse = await fetch(userCoinsUrl, {
+		headers: {
+			Cookie: cookieStore.toString(),
+		},
+	});
+
+	if (!coinsResponse.ok) {
+		const text = await coinsResponse.text();
 		console.error("Error del servidor:", text);
 		throw new Error("Error al obtener las monedas");
 	}
 
-	const data: {
+	if (!userCoinsResponse.ok) {
+		const text = await userCoinsResponse.text();
+		console.error("Error del servidor:", text);
+		throw new Error("Error al obtener las monedas del usuario");
+	}
+
+	const coinsData: {
 		coins: Coin[];
 		countries: { label: string; value: string }[];
 		years: { label: string; value: string }[];
-	} = await response.json();
+	} = await coinsResponse.json();
+
+	const userCoinsData: {
+		success: boolean;
+		data: Array<{
+			coin_id: number;
+			user_id: string;
+		}>;
+		user?: {
+			uuid: string;
+			email: string;
+			name: string;
+		};
+	} = await userCoinsResponse.json();
+
+	console.log("PEPE", { coinsData, userCoinsData, countryCodeMap });
 
 	return (
-		<section className="px-4 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
-			<div className="flex gap-4 w-full mb-6">
+		<section className="px-4 py-4 mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
+			<div className="flex w-full gap-4 mb-6">
 				<Combobox
-					data={data.countries}
+					data={coinsData.countries}
 					param="country"
 					placeholder="Selecciona un país"
 				/>
 				<Combobox
-					data={data.years}
+					data={coinsData.years}
 					param="year"
 					placeholder="Selecciona un año"
 				/>
 			</div>
 			<div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
-				{data.coins.map(({ country, id, imageSrc, reason, year }, index) => (
-					<Suspense key={id} fallback={<div>Loading...</div>}>
-						<Card className="rounded-lg shadow-md bg-slate-50 ">
-							<CardHeader className="flex-1">
-								<div className="flex flex-row items-center justify-between">
-									<CardTitle className="text-lg font-bold lg:text-xl">
-										{country}
-										<br />
-										<span className="font-medium">{year}</span>
-									</CardTitle>
-									<div className="text-4xl lg:text-5xl">
-										{getUnicodeFlagIcon("US")}
+				{coinsData.coins.map(
+					({ country, id, imageSrc, reason, year }, index) => (
+						<Suspense key={id} fallback={<div>Loading...</div>}>
+							<Card data-id={id} className="rounded-lg shadow-md bg-slate-50 ">
+								<CardHeader className="flex-1">
+									<div className="flex flex-row items-center justify-between">
+										<CardTitle className="text-lg font-bold lg:text-xl">
+											{country}
+											<br />
+											<span className="font-medium">{year}</span>
+										</CardTitle>
+										<CountryFlag
+											country={country}
+											countryCodeMap={countryCodeMap}
+											className="text-4xl lg:text-5xl"
+										/>
 									</div>
-								</div>
-							</CardHeader>
-							<CardContent className="flex-1">
-								<Image
-									className="w-full h-auto"
-									src={imageSrc}
-									alt={`Moneda de ${country} año ${year}`}
-									width={230}
-									height={230}
-									priority={index === 0}
-								/>
-								<p className="my-4 font-normal text-center text-slate-800 text-md">
-									{reason}
-								</p>
-							</CardContent>
-							<CardFooter className="flex-1">
-								<Button className="w-full h-12">Guardar</Button>
-							</CardFooter>
-						</Card>
-					</Suspense>
-				))}
+								</CardHeader>
+								<CardContent className="flex-1">
+									<Image
+										className="w-full h-auto"
+										src={imageSrc}
+										alt={`Moneda de ${country} año ${year}`}
+										width={230}
+										height={230}
+										priority={index === 0}
+									/>
+									<p className="my-4 font-normal text-center text-slate-800 text-md">
+										{reason}
+									</p>
+								</CardContent>
+								<SaveButton coinId={id} userCoinsData={userCoinsData} />
+							</Card>
+						</Suspense>
+					)
+				)}
 			</div>
 		</section>
 	);

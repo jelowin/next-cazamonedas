@@ -9,7 +9,7 @@ export default function Navbar() {
 				<Link href="/" className="flex items-center space-x-2">
 					<span className="text-xl font-bold">Cazamonedas</span>
 				</Link>
-				
+
 				<nav className="flex items-center space-x-6">
 					<Link
 						href="/coins"
