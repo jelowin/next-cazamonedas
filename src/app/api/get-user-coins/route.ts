@@ -4,8 +4,13 @@ import { turso } from "@/lib/turso";
 
 const TABLE_NAME = "user_coins";
 
-export async function GET() {
+export async function GET(request: Request) {
 	try {
+		console.log(
+			"🔍 Headers recibidos:",
+			Object.fromEntries(request.headers.entries())
+		);
+
 		// Obtener el usuario actual usando el helper
 		const user = await getCurrentUser();
 
@@ -13,6 +18,7 @@ export async function GET() {
 
 		// Verificar si el usuario está autenticado
 		if (!user) {
+			console.error("❌ No se encontró usuario autenticado");
 			return new NextResponse("No autorizado", { status: 401 });
 		}
 
