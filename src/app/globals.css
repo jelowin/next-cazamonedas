@@ -130,4 +130,27 @@
 
 html {
 	scroll-behavior: smooth;
+	overflow-x: hidden;
+}
+
+body {
+	overflow-x: hidden;
+	min-height: 100vh;
+}
+
+/* Prevenir overflow en elementos pequeños */
+* {
+	box-sizing: border-box;
+}
+
+/* Mejorar el comportamiento de imágenes en mobile */
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Asegurar que los contenedores no sobresalgan */
+.container {
+	max-width: 100%;
+	overflow-x: hidden;
 }

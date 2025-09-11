@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useQueryState } from "nuqs";
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
@@ -16,7 +17,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,22 +31,20 @@ export function Combobox({
 	placeholder: string;
 }) {
 	const [open, setOpen] = React.useState(false);
-	const searchParams = useSearchParams();
-	const router = useRouter();
-	const [value, setValue] = React.useState(searchParams.get(paramProp) || "");
+
+	// Usar nuqs para manejar el query parameter de manera declarativa
+	const [value, setValue] = useQueryState(paramProp, {
+		defaultValue: "",
+		clearOnDefault: true, // Remueve el param de la URL cuando está vacío
+	});
 
 	const handleSelectValueChange = (selectedValue: string) => {
+		// Si es el mismo valor, lo deseleccionamos (toggle)
 		const newValue = selectedValue === value ? "" : selectedValue;
+
+		// nuqs maneja automáticamente la URL y el estado
 		setValue(newValue);
 		setOpen(false);
-
-		const params = new URLSearchParams(searchParams);
-		if (newValue) {
-			params.set(`${paramProp}`, newValue);
-		} else {
-			params.delete(paramProp);
-		}
-		router.push(`?${params.toString()}`);
 	};
 
 	return (
@@ -66,7 +64,7 @@ export function Combobox({
 				<Command>
 					<CommandInput placeholder={placeholder} />
 					<CommandList>
-						<CommandEmpty>No se ha encontrado el país.</CommandEmpty>
+						<CommandEmpty>No se encontraron resultados.</CommandEmpty>
 						<CommandGroup>
 							{data.map((d) => (
 								<CommandItem

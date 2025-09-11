@@ -106,8 +106,8 @@ export default function SaveButton({ coinId, userCoinsData }: SaveButtonProps) {
 	// No mostrar el botón si no está autenticado
 	if (status !== "authenticated") {
 		return (
-			<CardFooter className="flex-1">
-				<Button disabled className="w-full h-12">
+			<CardFooter className="flex-1 px-3 sm:px-6">
+				<Button disabled className="w-full h-8 sm:h-12 text-base">
 					Inicia sesión para guardar
 				</Button>
 			</CardFooter>
@@ -115,9 +115,9 @@ export default function SaveButton({ coinId, userCoinsData }: SaveButtonProps) {
 	}
 
 	return (
-		<CardFooter className="flex-1">
+		<CardFooter className="flex-1 px-3 sm:px-6">
 			<Button
-				className={`w-full h-12 cursor-pointer ${
+				className={`w-full h-8 sm:h-12 cursor-pointer text-base ${
 					hasCoin
 						? "bg-red-600 hover:bg-red-700"
 						: "bg-blue-600 hover:bg-blue-700"
