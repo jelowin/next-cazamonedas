@@ -34,11 +34,21 @@ export default async function CoinsPage(props: CoinsPageProps) {
 	}
 
 	const urlParams = urlSearchParams.toString();
-	const coinsUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/get-coins${
+
+	// Detectar automáticamente la URL base para desarrollo/producción
+	const baseUrl =
+		process.env.NEXT_PUBLIC_APP_URL ||
+		(process.env.NODE_ENV === "development"
+			? "http://localhost:3000"
+			: "https://next-cazamonedas.vercel.app");
+
+	const coinsUrl = `${baseUrl}/api/get-coins${
 		urlParams ? `?${urlParams}` : ""
 	}`;
 
-	const userCoinsUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/get-user-coins`;
+	const userCoinsUrl = `${baseUrl}/api/get-user-coins`;
+
+	console.log("🌐 URLs generadas:", { baseUrl, coinsUrl, userCoinsUrl });
 
 	// Obtener las cookies del servidor para pasarlas al fetch
 	const cookieStore = await cookies();
@@ -64,19 +74,14 @@ export default async function CoinsPage(props: CoinsPageProps) {
 		throw new Error("Error al obtener las monedas");
 	}
 
-	if (!userCoinsResponse.ok) {
-		const text = await userCoinsResponse.text();
-		console.error("Error del servidor:", text);
-		throw new Error("Error al obtener las monedas del usuario");
-	}
-
 	const coinsData: {
 		coins: Coin[];
 		countries: { label: string; value: string }[];
 		years: { label: string; value: string }[];
 	} = await coinsResponse.json();
 
-	const userCoinsData: {
+	// Manejo seguro para obtener userCoins (puede fallar si no está autenticado)
+	let userCoinsData: {
 		success: boolean;
 		data: Array<{
 			coin_id: number;
@@ -87,7 +92,35 @@ export default async function CoinsPage(props: CoinsPageProps) {
 			email: string;
 			name: string;
 		};
-	} = await userCoinsResponse.json();
+	} = { success: false, data: [] };
+
+	try {
+		if (userCoinsResponse.ok) {
+			userCoinsData = await userCoinsResponse.json();
+		} else {
+			const text = await userCoinsResponse.text();
+			console.error("Error del servidor (userCoins):", {
+				status: userCoinsResponse.status,
+				statusText: userCoinsResponse.statusText,
+				body: text,
+				url: userCoinsUrl,
+				headers: Object.fromEntries(userCoinsResponse.headers.entries()),
+			});
+
+			// Si el error es de autenticación, usar datos vacíos en lugar de fallar
+			if (userCoinsResponse.status === 401) {
+				console.warn(
+					"🔒 Usuario no autenticado, mostrando vista sin datos de usuario"
+				);
+				userCoinsData = { success: false, data: [] };
+			} else {
+				throw new Error("Error al obtener las monedas del usuario");
+			}
+		}
+	} catch (error) {
+		console.error("❌ Error procesando userCoins:", error);
+		userCoinsData = { success: false, data: [] };
+	}
 
 	console.log("PEPE", { coinsData, userCoinsData, countryCodeMap });
 
