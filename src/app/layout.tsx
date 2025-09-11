@@ -5,6 +5,7 @@ import React from "react";
 import { raleway } from "@/lib/fonts";
 import Navbar from "@/components/ui/Navbar";
 import SessionProviderWrapper from "@/components/SessionProvider";
+import NuqsProvider from "@/components/providers/NuqsProvider";
 
 export const metadata: Metadata = {
 	title: "Cazamonedas - Monedas de 2 euros conmemorativas",
@@ -21,19 +22,21 @@ export default function RootLayout({
 		<html lang="es-ES">
 			<body className={`${raleway.className} antialiased`}>
 				<SessionProviderWrapper>
-					<Navbar />
-					<main className="flex-1">{children}</main>
-					<footer className="h-10 p-2 mt-10 text-sm font-semibold text-center border border-b ">
-						Made by{" "}
-						<a
-							className="text-blue-800 underline"
-							href="https://github.com/jelowin"
-							rel="nofollow noreferrer"
-						>
-							@jelowin
-						</a>{" "}
-						❤️
-					</footer>
+					<NuqsProvider>
+						<Navbar />
+						<main className="flex-1">{children}</main>
+						<footer className="h-10 p-2 mt-10 text-sm font-semibold text-center border border-b ">
+							Made by{" "}
+							<a
+								className="text-blue-800 underline"
+								href="https://github.com/jelowin"
+								rel="nofollow noreferrer"
+							>
+								@jelowin
+							</a>{" "}
+							❤️
+						</footer>
+					</NuqsProvider>
 				</SessionProviderWrapper>
 			</body>
 		</html>
