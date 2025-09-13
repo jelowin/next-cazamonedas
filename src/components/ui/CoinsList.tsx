@@ -95,7 +95,7 @@ export default function CoinsList({
 						<Card
 							key={id}
 							data-id={id}
-							className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-out backdrop-blur-sm h-full flex flex-col transform hover:-translate-y-2 hover:scale-[1.03] ${
+							className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl backdrop-blur-sm h-full flex flex-col ${
 								isOwned
 									? "bg-gradient-to-br from-yellow-50 to-amber-50/90 dark:from-yellow-900/40 dark:to-amber-900/40 ring-2 ring-yellow-400/70 dark:ring-yellow-500/70 shadow-xl shadow-yellow-400/40 dark:shadow-yellow-500/40 border border-yellow-300/60 dark:border-yellow-600/60"
 									: "bg-gradient-to-br from-white to-gray-50/70 dark:from-gray-800/95 dark:to-gray-900/80 border border-gray-200/80 dark:border-gray-700/80 shadow-gray-300/40 dark:shadow-gray-900/40"

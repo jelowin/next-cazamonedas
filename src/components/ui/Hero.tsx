@@ -109,7 +109,7 @@ export default function Hero() {
 					</div>
 					<div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-sm hover:shadow-md transition-shadow duration-300">
 						<div className="font-outfit text-3xl font-bold text-amber-600 mb-1">
-							2007+
+							2004
 						</div>
 						<div className="font-inter text-sm text-gray-600">Desde el año</div>
 					</div>
