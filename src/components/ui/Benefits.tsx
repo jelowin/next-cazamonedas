@@ -119,11 +119,9 @@ export default function Benefits() {
 					</div>
 					<div className="text-center">
 						<div className="font-outfit text-5xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">
-							2007+
+							2004
 						</div>
-						<div className="font-inter text-gray-300 text-lg">
-							Años de historia
-						</div>
+						<div className="font-inter text-gray-300 text-lg">Desde el año</div>
 					</div>
 				</div>
 			</div>

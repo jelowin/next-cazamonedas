@@ -96,10 +96,10 @@ export default function Footer() {
 							</div>
 							<div className="p-3 bg-white/5 rounded-lg border border-white/10">
 								<div className="font-outfit text-2xl font-bold text-emerald-400">
-									2007+
+									2004
 								</div>
 								<div className="font-inter text-sm text-gray-300">
-									Años de historia
+									Desde el año
 								</div>
 							</div>
 						</div>

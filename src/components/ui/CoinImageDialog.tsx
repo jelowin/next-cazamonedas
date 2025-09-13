@@ -44,7 +44,7 @@ export default function CoinImageDialog({
 							alt={`Moneda de ${country} año ${year}`}
 							width={400}
 							height={400}
-							className="relative w-full h-auto rounded-2xl shadow-xl transition-transform duration-500 hover:scale-110 cursor-zoom-in"
+							className="relative w-full h-auto rounded-2xl shadow-xl cursor-zoom-in"
 							priority
 							placeholder="blur"
 							blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmM2Y0ZjYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU3ZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBmaWxsPSJ1cmwoI2cpIiBkPSJNMCAwaDQwMHY0MDBIMHoiLz48L3N2Zz4="
