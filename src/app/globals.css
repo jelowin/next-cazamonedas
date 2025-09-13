@@ -115,3 +115,86 @@ img {
 	max-width: 100%;
 	overflow-x: hidden;
 }
+
+/* Micro-interacciones y efectos modernos */
+@layer utilities {
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	/* Efecto de glassmorphism */
+	.glass {
+		background: rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	/* Gradiente radial para efectos de partículas */
+	.bg-gradient-radial {
+		background: radial-gradient(circle, var(--tw-gradient-stops));
+	}
+
+	/* Smooth scrolling mejorado */
+	.smooth-scroll {
+		scroll-behavior: smooth;
+		scroll-padding-top: 2rem;
+	}
+}
+
+/* Animaciones personalizadas */
+@keyframes shimmer {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-2px);
+	}
+}
+
+@keyframes pulse-glow {
+	0%,
+	100% {
+		box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+	}
+}
+
+/* Mejoras de accesibilidad con motion reducido */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* Sistema de fuentes personalizado */
+.font-inter {
+	font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.font-poppins {
+	font-family: var(--font-poppins), system-ui, sans-serif;
+}
+
+.font-outfit {
+	font-family: var(--font-outfit), system-ui, sans-serif;
+}
