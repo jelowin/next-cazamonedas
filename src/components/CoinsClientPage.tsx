@@ -1,28 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FiltersSection from "@/components/ui/FiltersSection";
 import CoinsContainer from "@/components/ui/CoinsContainer";
-
-interface UserCoinsData {
-	success: boolean;
-	data: Array<{
-		coin_id: number;
-		user_id: string;
-	}>;
-	user?: {
-		uuid: string;
-		email: string;
-		name: string;
-	};
-}
-
-interface StaticData {
-	countries: { label: string; value: string }[];
-	years: { label: string; value: string }[];
-	userCoinsData: UserCoinsData;
-	countryCodeMap: Record<string, string>;
-}
+import { useAppData } from "@/contexts/AppDataContext";
 
 /**
  * Skeleton para la carga inicial de filtros
@@ -39,66 +20,7 @@ function FiltersSkeletonSection() {
 }
 
 export default function CoinsClientPage() {
-	const [staticData, setStaticData] = useState<StaticData | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-
-	// Cargar datos estáticos solo una vez al montar el componente
-	useEffect(() => {
-		const fetchStaticData = async () => {
-			try {
-				setLoading(true);
-				setError(null);
-
-				console.log("🔄 Fetching static data (countries, years, user data)...");
-
-				// Realizar peticiones en paralelo
-				const [coinsResponse, userCoinsResponse, countryCodesResponse] =
-					await Promise.all([
-						fetch("/api/get-coins"), // Solo para obtener países y años
-						fetch("/api/get-user-coins"),
-						fetch("/api/country-codes"),
-					]);
-
-				// Procesar respuesta inicial de monedas (solo para obtener países/años)
-				if (!coinsResponse.ok) {
-					throw new Error(
-						`Error al cargar datos iniciales: ${coinsResponse.status}`
-					);
-				}
-				const coinsResult = await coinsResponse.json();
-
-				// Procesar respuesta de monedas del usuario (puede fallar si no está autenticado)
-				let userCoinsData: UserCoinsData = { success: false, data: [] };
-				if (userCoinsResponse.ok) {
-					userCoinsData = await userCoinsResponse.json();
-				} else {
-					console.warn("🔒 Usuario no autenticado, usando datos vacíos");
-				}
-
-				// Procesar códigos de país
-				let countryCodeMap: Record<string, string> = {};
-				if (countryCodesResponse.ok) {
-					const countryCodesResult = await countryCodesResponse.json();
-					countryCodeMap = countryCodesResult.data || {};
-				}
-
-				setStaticData({
-					countries: coinsResult.countries || [],
-					years: coinsResult.years || [],
-					userCoinsData,
-					countryCodeMap,
-				});
-			} catch (err) {
-				console.error("❌ Error fetching static data:", err);
-				setError(err instanceof Error ? err.message : "Error desconocido");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchStaticData();
-	}, []); // Solo ejecutar una vez al montar
+	const { staticData, userCoinsData, loading, error } = useAppData();
 
 	// Estado de error completo
 	if (error) {
@@ -120,39 +42,33 @@ export default function CoinsClientPage() {
 		);
 	}
 
-	// Estado de carga inicial
-	if (loading || !staticData) {
+	// Estado de carga
+	if (loading || !staticData || !userCoinsData) {
 		return (
 			<section className="px-2 py-4 mx-auto max-w-screen-2xl sm:px-4 lg:px-8">
-				<div className="flex justify-center items-center min-h-[200px] mb-6">
-					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-					<span className="ml-3 text-lg">Cargando aplicación...</span>
-				</div>
 				<FiltersSkeletonSection />
+				{/* Skeleton para las monedas */}
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+					{Array.from({ length: 8 }).map((_, index) => (
+						<div
+							key={index}
+							className="h-96 bg-gray-300 rounded-lg animate-pulse"
+						></div>
+					))}
+				</div>
 			</section>
 		);
 	}
 
-	// Estado normal con datos estáticos cargados
+	// Estado de éxito - mostrar la aplicación
 	return (
 		<section className="px-2 py-4 mx-auto max-w-screen-2xl sm:px-4 lg:px-8">
-			{/* Información de debug (solo en desarrollo) */}
-			{process.env.NODE_ENV === "development" && (
-				<div className="mb-4 p-2 bg-green-100 rounded text-xs">
-					<strong>Debug:</strong> Datos estáticos cargados. Los filtros y
-					paginación ya no recargarán toda la página.
-				</div>
-			)}
-
-			{/* Filtros (siempre estables) */}
 			<FiltersSection
 				countries={staticData.countries}
 				years={staticData.years}
 			/>
-
-			{/* Contenedor de monedas (maneja su propio loading) */}
 			<CoinsContainer
-				userCoinsData={staticData.userCoinsData}
+				userCoinsData={userCoinsData}
 				countryCodeMap={staticData.countryCodeMap}
 			/>
 		</section>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useCountryStats } from "@/hooks/useStats";
+import { useCountryStats } from "@/contexts/StatsContext";
 import {
 	Card,
 	CardContent,
