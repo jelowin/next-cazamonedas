@@ -12,7 +12,7 @@ interface CountryStats {
 export async function GET() {
 	try {
 		// Obtener usuario actual
-		const user = await getCurrentUser();		// Obtener el total de monedas por país
+		const user = await getCurrentUser(); // Obtener el total de monedas por país
 		const totalByCountryResult = await turso.execute(`
 			SELECT country, COUNT(*) as total
 			FROM coins
