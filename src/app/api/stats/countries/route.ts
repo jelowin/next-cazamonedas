@@ -11,21 +11,14 @@ interface CountryStats {
 
 export async function GET() {
 	try {
-		console.log("🔄 Iniciando obtención de estadísticas por país...");
-
 		// Obtener usuario actual
-		const user = await getCurrentUser();
-		console.log("👤 Usuario obtenido:", user ? user.uuid : "no autenticado");
-
-		// Obtener el total de monedas por país
-		console.log("🔄 Obteniendo total de monedas por país...");
+		const user = await getCurrentUser();		// Obtener el total de monedas por país
 		const totalByCountryResult = await turso.execute(`
 			SELECT country, COUNT(*) as total
 			FROM coins
 			GROUP BY country
 			ORDER BY country
 		`);
-		console.log("📊 Países encontrados:", totalByCountryResult.rows.length);
 
 		const stats: CountryStats[] = [];
 
@@ -35,7 +28,6 @@ export async function GET() {
 
 			let userCoins = 0;
 			if (user) {
-				console.log(`🔄 Obteniendo monedas del usuario para ${country}...`);
 				// Obtener monedas del usuario para este país
 				const userCoinsResult = await turso.execute({
 					sql: `
@@ -47,7 +39,6 @@ export async function GET() {
 					args: [user.uuid, country],
 				});
 				userCoins = Number(userCoinsResult.rows[0]?.total) || 0;
-				console.log(`📈 ${country}: total=${totalCoins}, user=${userCoins}`);
 			}
 
 			const percentage =
@@ -61,10 +52,9 @@ export async function GET() {
 			});
 		}
 
-		console.log("✅ Estadísticas por país obtenidas:", stats.length, "países");
 		return NextResponse.json(stats);
 	} catch (error) {
-		console.error("❌ Error al obtener estadísticas por país:", error);
+		console.error("Error al obtener estadísticas por país:", error);
 		return NextResponse.json(
 			{ error: "Error interno del servidor" },
 			{ status: 500 }
