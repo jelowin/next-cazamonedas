@@ -22,9 +22,7 @@ export default async function ProfilePage() {
 		<div className="container mx-auto py-8 px-4">
 			<div className="mb-8 text-center">
 				<h1 className="text-3xl font-bold">Mi Perfil</h1>
-				<p className="text-muted-foreground mt-2">
-					Información de tu cuenta
-				</p>
+				<p className="text-muted-foreground mt-2">Información de tu cuenta</p>
 			</div>
 
 			{/* Información del usuario */}
@@ -43,8 +41,12 @@ export default async function ProfilePage() {
 							</AvatarFallback>
 						</Avatar>
 						<div>
-							<div className="text-xl font-bold">{session.user?.name || "Usuario"}</div>
-							<div className="text-sm text-muted-foreground">{session.user?.email}</div>
+							<div className="text-xl font-bold">
+								{session.user?.name || "Usuario"}
+							</div>
+							<div className="text-sm text-muted-foreground">
+								{session.user?.email}
+							</div>
 						</div>
 					</CardTitle>
 				</CardHeader>
