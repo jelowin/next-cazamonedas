@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, memo } from "react";
 import { useCoinsFilters } from "@/hooks/useCoinsFilters";
 import CoinsList from "@/components/ui/CoinsList";
 import PaginationNuqs from "@/components/ui/PaginationNuqs";
@@ -94,7 +94,7 @@ function PaginationSkeleton() {
 	);
 }
 
-export default function CoinsContainer({
+function CoinsContainer({
 	userCoinsData,
 	countryCodeMap,
 }: CoinsContainerProps) {
@@ -103,20 +103,25 @@ export default function CoinsContainer({
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	// Función para construir la URL de la API
-	const buildApiUrl = (filterParams: {
-		country: string;
-		year: number | null;
-		page: number;
-	}) => {
-		const params = new URLSearchParams();
+	// Función para construir la URL de la API - memoizada para evitar recálculos
+	const buildApiUrl = useMemo(() => {
+		return (filterParams: {
+			country: string;
+			year: number | null;
+			page: number;
+		}) => {
+			const params = new URLSearchParams();
 
-		if (filterParams.country) params.set("country", filterParams.country);
-		if (filterParams.year) params.set("year", filterParams.year.toString());
-		if (filterParams.page > 1) params.set("page", filterParams.page.toString());
+			if (filterParams.country) params.set("country", filterParams.country);
+			if (filterParams.year) params.set("year", filterParams.year.toString());
+			if (filterParams.page > 1)
+				params.set("page", filterParams.page.toString());
 
-		return `/api/get-coins${params.toString() ? `?${params.toString()}` : ""}`;
-	};
+			return `/api/get-coins${
+				params.toString() ? `?${params.toString()}` : ""
+			}`;
+		};
+	}, []); // No dependencies - esta función no cambia
 
 	// Cargar monedas cuando cambien los filtros
 	useEffect(() => {
@@ -146,7 +151,7 @@ export default function CoinsContainer({
 		};
 
 		fetchCoins();
-	}, [filters]); // Re-ejecutar solo cuando cambien los filtros
+	}, [filters, buildApiUrl]); // Re-ejecutar solo cuando cambien los filtros
 
 	// Estado de error
 	if (error) {
@@ -194,3 +199,6 @@ export default function CoinsContainer({
 		</>
 	);
 }
+
+// Optimizar el componente para evitar re-renderizados innecesarios
+export default memo(CoinsContainer);

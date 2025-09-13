@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useStats } from "@/hooks/useStats";
+import { useStats } from "@/contexts/StatsContext";
 import { Coins } from "lucide-react";
 
 interface StatsDisplayProps {
