@@ -1,15 +1,28 @@
-import { Raleway, Montserrat } from "next/font/google";
+import { Inter, Poppins, Outfit } from "next/font/google";
 
-export const raleway = Raleway({
-	subsets: ["latin"], // Define los subsets que necesitas (latin es común para idiomas occidentales)
-	weight: ["400", "700"], // Pesos que quieres usar (regular y bold, por ejemplo)
-	style: ["normal", "italic"],
-	display: "swap", // Mejora la carga de la fuente
-});
-
-export const montserrat = Montserrat({
+// Inter para navegación, botones y contenido general
+export const inter = Inter({
 	subsets: ["latin"],
-	weight: ["400", "700"],
+	weight: ["400", "500", "600"], // Regular, Medium, SemiBold
 	style: ["normal"],
 	display: "swap",
+	variable: "--font-inter",
+});
+
+// Poppins para títulos grandes y elementos destacados
+export const poppins = Poppins({
+	subsets: ["latin"],
+	weight: ["600", "700", "800"], // SemiBold, Bold, ExtraBold
+	style: ["normal"],
+	display: "swap",
+	variable: "--font-poppins",
+});
+
+// Outfit para acentos especiales y elementos únicos
+export const outfit = Outfit({
+	subsets: ["latin"],
+	weight: ["400", "500", "600", "700"], // Regular, Medium, SemiBold, Bold
+	style: ["normal"],
+	display: "swap",
+	variable: "--font-outfit",
 });

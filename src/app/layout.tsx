@@ -2,9 +2,11 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 import React from "react";
-import { raleway } from "@/lib/fonts";
+import { inter, poppins, outfit } from "@/lib/fonts";
 import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 import SessionProviderWrapper from "@/components/SessionProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import NuqsProvider from "@/components/providers/NuqsProvider";
 import { StatsProvider } from "@/contexts/StatsContext";
 import { AppDataProvider } from "@/contexts/AppDataContext";
@@ -21,29 +23,25 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="es-ES">
-			<body className={`${raleway.className} antialiased`}>
-				<SessionProviderWrapper>
-					<AppDataProvider>
-						<StatsProvider>
-							<NuqsProvider>
-								<Navbar />
-								<main className="flex-1">{children}</main>
-								<footer className="h-10 p-2 mt-10 text-sm font-semibold text-center border border-b ">
-									Made by{" "}
-									<a
-										className="text-blue-800 underline"
-										href="https://github.com/jelowin"
-										rel="nofollow noreferrer"
-									>
-										@jelowin
-									</a>{" "}
-									❤️
-								</footer>
-							</NuqsProvider>
-						</StatsProvider>
-					</AppDataProvider>
-				</SessionProviderWrapper>
+		<html lang="es-ES" suppressHydrationWarning>
+			<body
+				className={`${inter.variable} ${poppins.variable} ${outfit.variable} font-inter antialiased bg-background text-foreground transition-colors duration-300`}
+			>
+				<ThemeProvider>
+					<SessionProviderWrapper>
+						<AppDataProvider>
+							<StatsProvider>
+								<NuqsProvider>
+									<div className="flex min-h-screen flex-col">
+										<Navbar />
+										<main className="flex-1">{children}</main>
+										<Footer />
+									</div>
+								</NuqsProvider>
+							</StatsProvider>
+						</AppDataProvider>
+					</SessionProviderWrapper>
+				</ThemeProvider>
 			</body>
 		</html>
 	);
