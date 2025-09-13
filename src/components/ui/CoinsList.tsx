@@ -85,10 +85,23 @@ export default function CoinsList({
 		);
 	}
 
+	const addCloudinaryTransformations = ({
+		url,
+		transformations = "f_auto,q_auto,c_fill,r_max",
+	}: {
+		url: string;
+		transformations?: string;
+	}) => {
+		return url.replace("/upload/", `/upload/${transformations}/`);
+	};
+
 	return (
 		<>
 			<div className="grid gap-5 sm:gap-7 lg:gap-9 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 p-1">
 				{coins.map(({ country, id, imageSrc, reason, year }, index) => {
+					const transformedImage = addCloudinaryTransformations({
+						url: imageSrc,
+					});
 					const isOwned = isCoinSaved(id);
 
 					return (
@@ -197,10 +210,10 @@ export default function CoinsList({
 
 									<Image
 										className="relative w-full h-auto rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-500"
-										src={imageSrc}
+										src={transformedImage}
 										alt={`Moneda de ${country} año ${year}`}
-										width={180}
-										height={180}
+										width={200}
+										height={200}
 										priority={index === 0}
 										placeholder="blur"
 										blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmOGZhZmMiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBmaWxsPSJ1cmwoI2cpIiBkPSJNMCAwaDE4MHYxODBIMHoiLz48L3N2Zz4="
